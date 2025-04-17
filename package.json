@@ -1,10 +1,10 @@
 {
   "name": "book-store-management",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon app.js"
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
   },
   "keywords": ["bookstore", "management", "api"],
   "author": "",
