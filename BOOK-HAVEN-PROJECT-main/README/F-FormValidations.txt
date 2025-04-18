@@ -1,0 +1,39 @@
+(1)-Client side validation =>frontend-->backend
+(2)-Server side validation => db(schema) / error handle
+
+*just add => required <= at the end. 
+<input type="text" id="author" name="author" placeholder="Enter author" required class="form-control">
+
+*Inorder to make the website to look similar by opening in ANY BROWSER
+we use 
+bootstrap defualt implementation ✔️ 
+instead of default browser implementation ❌- 
+(1)Add this at the end =>
+nonvalidate class="needs-validation" in
+<form action="/listings" method="POST" nonvalidate class="needs-validation">
+
+(2)PUBLIC-> JS ->script.js
+-------------------------------------------
+(() => {
+    'use strict'
+  
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    const forms = document.querySelectorAll('.needs-validation')
+  
+    // Loop over them and prevent submission
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+  
+        form.classList.add('was-validated')
+      }, false)
+    })
+  })()
+  ---------------------------------------------------
+(3)
+You have to use -> Valid feedback & invalid feedback
+
+ 

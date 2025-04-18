@@ -1,0 +1,60 @@
+Authentication- The proccess of verifying who someone is-SIGNUP/LOGIN
+Authorization-Process of verifyinng what specific applications, files, and data a user has access to 
+
+(1)-Storing passwords
+email, username, but PASSWORD- we never store the passwords as it is.We stored that in HASHED FORM through Hashing function.
+password -> abc password ->"str1"
+
+(2)- For every input, there is a fixed output
+- Hacker can never be decode input from output(one-way functions)
+
+(3)- way of protecting passwords stored in db by adding a string of 32 or more characters and then hashing them.
+
+(4)- Passport Library
+npm i passport
+npm i passport-local
+npm i passport-local-mongoose
+
+(5)-USER MODEL
+user: username, password, email
+MODELS->user.js
+------------------------------------
+const mongoose= require("mongoose");
+const Schema = mongoose.Schema;
+const passportLocalMongoose = require("passport-local-mongoose");
+const userSchema = new Schema({
+email:{
+    type:String,
+    required: true,
+}
+
+});
+User.plugin(passportLocalMongoose);
+module.exports = mongoose.model('user', userSchema);
+------------------------------------------
+Then require passport in app.js=>
+const passport = require("passport");
+const localStrategy = require("passport-local");
+const user= require("./MODELS/user.js");
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+now create the route :
+// Demo User Route
+app.get("/demouser", async (req, res) )=> {
+    let fakeUser = new User({
+        email: "student@gmail.com",
+        username: "delta-student"
+    });
+ and run the :localhost/8080/demouser
+
+
+ (6) ROUTES->user.js
+ 
+
+

@@ -1,0 +1,34 @@
+==>// Middlewares
+app.use((req, res)=>{
+    let { query}= req.query;
+    console.log(query);
+    console.log("Hi, im middleware");
+    res.send("middleware finished");
+});
+
+app.get("/random", (req, res)=>{
+    res.send("Hi, Im root");
+});
+
+Middlewares=>
+ (1)Send Response -  It itself ONLY sends request to every response coming to page.
+ (2)Calls next middleware 
+
+ ==>(2)Calls next middleware -ACTUAL WORK OF Middlewares i.e.,
+ = next() parameter-THEY EXECUTE FOR EVERY FUKING RESPONSE AND THEN MAKE SPACE FOR NEXT ROUTES TO RESPOND.
+
+ app.use((req, res, next)=>{
+     console.log("Hi, im middleware");
+     next(); // CONSIDERED AS THE END OF THE MIDDLEWARE
+ });
+
+ app.get("/random", (req, res)=>{
+    res.send("Hi, Im root");
+});
+
+
+
+
+
+
+

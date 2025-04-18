@@ -1,0 +1,53 @@
+<% layout('/layouts/boilerplate') %>
+<div class="row">
+    <div class="col-6 offset-3">
+        <h3 class="text-center">Create an Account</h3>
+
+        <% if (locals.errorMessage) { %>
+            <div class="alert alert-danger"><%= errorMessage %></div>
+        <% } %>
+
+        <form method="POST" action="/signup" onsubmit="return validatePasswords()">
+            <div class="mb-3">
+                <label for="username" class="form-label"><strong>Username:</strong></label>
+                <input type="text" id="username" name="username" value="<%= locals.username || '' %>" required class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label"><strong>Email:</strong></label>
+                <input type="email" id="email" name="email" value="<%= locals.email || '' %>" required class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="password" class="form-label"><strong>Password:</strong></label>
+                <input type="password" id="password" name="password" required class="form-control">
+            </div>
+
+            <div class="mb-3">
+                <label for="confirm_password" class="form-label"><strong>Confirm Password:</strong></label>
+                <input type="password" id="confirm_password" name="confirmPassword" required class="form-control">
+                <div id="passwordError" class="text-danger mt-1"></div>
+            </div>
+
+            <button type="submit" class="btn btn-success w-100">Sign Up</button>
+        </form>
+
+        <p class="text-center mt-3">Already have an account? <a href="/login">Login here</a></p>
+    </div>
+</div>
+
+<script>
+function validatePasswords() {
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("confirm_password").value;
+    var errorDiv = document.getElementById("passwordError");
+
+    if (password !== confirmPassword) {
+        errorDiv.innerText = "Passwords do not match!";
+        return false; // Prevent form submission
+    } else {
+        errorDiv.innerText = ""; // Clear any previous error message
+        return true;
+    }
+}
+</script>

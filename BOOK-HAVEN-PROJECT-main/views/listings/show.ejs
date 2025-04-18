@@ -1,0 +1,52 @@
+<% layout('/layouts/boilerplate') %>
+
+<div class="row mt-3">
+    <div class="col-md-10 offset-md-1">
+        <h3>Listing Details</h3>
+
+        <div class="card p-3" style="max-width: 850px; margin: auto;">
+            <div class="row g-0">
+                <!-- Image Section -->
+                <div class="col-md-4 d-flex align-items-center">
+                    <img src="<%= listing.image %>" class="card-img show-img" alt="listing_image" 
+                        style="max-width: 100%; height: auto; display: block; margin: auto;">
+                </div>
+
+                <!-- Details Section -->
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <p class="card-text" style="white-space: pre-wrap; margin-left: 15px;">
+                            <b><strong>Title:</strong> <%= listing.title %></b> <br>
+                            <strong>Author:</strong> <%= listing.author %> <br>
+                            <strong>Description:</strong> <%= listing.description %> <br>
+                            <strong>Category:</strong> <%= listing.category %> <br>
+                            <strong>Publisher:</strong> <%= listing.publisher %> <br>
+                            <strong>Price:</strong> ₹<%= listing.price.toLocaleString("en-IN") %> <br>
+                            <strong>Publication Year:</strong> <%= listing.publication_year %> <br>
+                            <strong>Stock:</strong> <%= listing.stock %> <br>
+                            <strong>Language:</strong> <%= listing.language %> <br>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <a href="/listings/<%= listing._id %>/edit" class="btn btn-primary edit-btn">Edit this Listing</a>
+        <br><br>
+
+        <!-- Delete Form with Bootstrap Validation -->
+        <form action="/listings/<%= listing._id %>?_method=DELETE" method="POST" class="needs-validation" novalidate>
+            <button class="btn btn-danger del-btn" type="submit">Delete this listing</button>
+            
+            <!-- Validation Messages -->
+            <div class="valid-feedback">Listing deleted successfully.</div>
+            <div class="invalid-feedback">Something went wrong. Please try again.</div>
+        </form>
+    </div>
+</div>
+
+<!-- Include Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Include Custom Validation Script -->
+<script src="/path/to/your/script.js"></script>

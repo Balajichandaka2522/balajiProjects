@@ -1,0 +1,48 @@
+<% layout('layouts/boilerplate') %>
+
+<h3>All Listings</h3>
+
+<!-- Search Form with Bootstrap Validation -->
+<form action="/search" method="GET" class="needs-validation" novalidate>
+  <div class="mb-3">
+    <label for="searchQuery" class="form-label">Search Listings:</label>
+    <input 
+      type="text" 
+      id="searchQuery" 
+      name="query" 
+      class="form-control" 
+      placeholder="Enter search term" 
+      required>
+    <div class="valid-feedback">
+      Looks good!
+    </div>
+    <div class="invalid-feedback">
+      Please enter a search term.
+    </div>
+  </div>
+  <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+  <% allListings.forEach(listing => { %>  
+    <a href="/listings/<%= listing._id %>" class="listing-link" style="text-decoration: none; color: inherit;">
+      <div class="card col" style="width: 20rem;">
+          <img src="<%= listing.image %>" 
+               class="card-img-top" 
+               alt="listing_image" 
+               style="height: 25rem"
+               onerror="this.onerror=null; this.src='/default-image.jpg';">
+          <div class="card-body">
+            <p class="card-text">
+              <b><%= listing.title %> </b><br>
+              &#8377; <%= listing.price.toLocaleString("en-IN") %> 
+            </p>
+          </div>
+      </div>
+    </a>
+  <% }) %>
+</div>
+
+<!-- Include Bootstrap and Custom Validation Script -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/path/to/your/script.js"></script> 

@@ -1,0 +1,203 @@
+To go back=> (cd ..)
+
+TASK-01:
+npm init -y ( for package.json)
+npm i express (for express)
+npm i ejs
+npm i mongoose
+npm install -g nodemon
+
+touch app.js 
+-----------------------------
+const express= require("express");
+const app= express();
+const mongoose = require("mongoose");
+
+app.get("/", (req,res)=>{
+    res.send("Hi, im pallu");
+})
+
+app.listen(8080, ()=> {
+    console.log("server is listening to port 8080");
+});
+-------------------------------
+start the server -> nodemon app.js
+Go to browser : localhost/8080
+
+
+=> TASK-02:Connect to mongoDB
+--------------------------------------
+const MONGO_URL ="mongodb://127.0.0.1:27017/wanderlust";
+main()
+.then( ()=> {
+    console.log("connected to DB");
+})
+.catch( (err)=> {
+ console.log(err);
+});
+async function main(){
+    await mongoose.connect (MONGO_URL);
+}
+-------------------------------------------
+
+=> TASK-03: create MODELS folder -> listing.js
+Book Model : Listing 
+.title
+.author
+.description
+.image
+.price
+.category
+.publisher
+.publication_year
+.stock
+.language
+
+then add code in accordingly like
+Listing.js:
+---------------------------------------------------
+const mongoose = require("mongoose");
+const { Schema } = mongoose; 
+
+const listingSchema = new Schema({
+    title: { type: String, required: true },
+    author: { type: String, required: true },
+    description: { type: String },
+    image: { 
+        type: String,
+     set:(v)=> v ===" " ? "defualt link" : v,
+    },
+    price: { type: Number, required: true },
+    category: { type: String },
+    publisher: { type: String },
+    publication_year: { type: Number },
+    stock: { type: Number, default: 0 }, 
+    language: { type: String }
+}); 
+
+const Listing = mongoose.model("Listing", listingSchema);
+module.exports = Listing;
+---------------------------------------------------
+                   
+NOW, create a route in app.js and inorder to access this Listing from Listing.js
+-->add this line in app.js 
+---------------------------------------------------
+=> const Listing = require("./MODELS/listing.js");
+
+app.get("/testListing", async (req,res) => {
+    let sampleListing = new Listing({
+        title: "My New Book",
+        author: "John Doe",
+        description: "A fascinating book about the world of coding.",
+        image: "https://example.com/default-book.jpg",
+        price: 19.99,
+        category: "Programming",
+        publisher: "Tech Press",
+        publication_year: 2024,
+        stock: 50,
+        language: "English"
+    });
+    await sampleListing.save();
+    console.log("sample was saved<3!");
+    res.send("Successful testing");
+});
+------------------------------------------------
+Now go to termial
+>mongosh
+
+>show dbs
+
+> use wanderlust
+-listing
+-resumes
+
+>db.listing.find() - now inorder to add into listings u have to=> 
+=> localhost:8080/testListing 
+Successful testing!
+TERMINAL:
+sample was saved<3!
+
+now..again go to terminal, this time<3!
+wanderlust> db.listings.find()
+[
+  {
+    _id: ObjectId('67ce9d4ae80b87c56ab077f6'),
+    title: 'My New Book',
+    author: 'John Doe',
+    description: 'A fascinating book about the world of coding.',
+    image: 'https://example.com/default-book.jpg',
+    price: 19.99,
+    category: 'Programming',
+    publisher: 'Tech Press',
+    publication_year: 2024,
+    stock: 50,
+    language: 'English',
+    __v: 0
+  }
+]
+
+=> TASK-04:
+Now inorder to store large data ask  chatgpt for sample raw data  nd iorder to store that,
+Create a new folder INIT-> dat.js
+create INIT->index.js and add initialization code
+
+index.js
+-------------------------------------------------------
+
+const mongoose = require("mongoose");
+const initData = require("./data.js");
+const Listing = require("../MODELS/listing.js");
+
+const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+
+async function main() {
+    try {
+        await mongoose.connect(MONGO_URL);
+        console.log("Connected to DB");
+        await initDB();
+        mongoose.connection.close();
+    } catch (err) {
+        console.error("Error connecting to DB:", err);
+    }
+}
+
+const initDB = async () => {
+    try {
+        await Listing.deleteMany({});
+        await Listing.insertMany(initData.data);
+        console.log("Data was initialized");
+    } catch (err) {
+        console.error("Error initializing data:", err);
+    }
+};
+
+main();
+
+--------------------------------------------------------------
+now wanderlust> db.listings.find()
+[
+    {
+        "_id" : ObjectId("..."),
+        "title" : "Wanderlust",
+        "description" : "Explore the world",
+        "location" : "New York",
+        ......
+    }
+    {
+           "_id" : ObjectId("..."),
+        "title" : "Wanderlust",
+        "description" : "Explore the world",
+        "location" : "New York",
+    }
+    {
+         "_id" : ObjectId("..."),
+        "title" : "Wanderlust",
+        "description" : "Explore the world",
+        "location" : "New York",
+    }
+    .
+    .
+    .
+    
+]
+

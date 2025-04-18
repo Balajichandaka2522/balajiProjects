@@ -1,0 +1,141 @@
+=> Create /listings route in app.js to print the db listings data into console:
+
+app.get("/listings", (req,res)=>{
+    Listing.find({}).then(res => {
+        console.log(res);
+    });
+});
+
+=> now u need to parse this data into ejs file
+--change the code into this
+
+//INDEX ROUTE
+app.get("/listings", async (req,res)=>{
+  const allListings = await Listing.find({});
+  res.render("index.ejs", {allListings});
+    });
+
+--const path = require("path");
+-Create a folder VIEWS-> LISTINGS -> index.ejs
+
+index.ejs:
+--------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wanderlust</title>
+</head>
+<body>
+    <h3>All listings</h3>
+</body>
+</html>
+-----------------------------------------
+in app.js=>
+app.set("view engine","ejs");
+app.set("views", path.join(__dirname,"views"));
+
+app.get("/listings", async (req,res)=>{
+  const allListings = await Listing.find({});
+  res.render("listings/index", { allListings });
+ });
+
+localhost:8080/listings
+-All Listings (suceessful)
+
+
+
+//SHOW ROUTE
+app.use(express.urlencoded({extended: true}));
+app.get("/listings/:id", async (req,res)=>{
+    let {id} = req.params;
+    const listing = await Listing.findById(id);
+    res.render("listings/show.ejs", {listing});
+});
+
+NOW, add the code in show.ejs
+=>show.ejs
+--------------------------------------------------------
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust - Listing Details</title>
+</head>
+<body>
+    <h3>Listing Details</h3>
+    <ul>
+        <li><strong>Title:</strong> <%= listing.title %></li>
+        <li><strong>Author:</strong> <%= listing.author %></li>
+        <li><strong>Description:</strong> <%= listing.description %></li>
+        <li><strong>Category:</strong> <%= listing.category %></li>
+        <li><strong>Publisher:</strong> <%= listing.publisher %></li>
+        <li><strong>Publication Year:</strong> <%= listing.publication_year %></li>
+        <li><strong>Stock:</strong> <%= listing.stock %></li>
+        <li><strong>Language:</strong> <%= listing.language %></li>
+        <li><strong>Price:</strong> $<%= listing.price %></li>
+        <li><strong>Image:</strong></li>
+        <li><img src="<%= listing.image %>" alt="Book Cover" width="200"></li>
+    </ul>
+</body>
+</html>
+-----------------------------------------------------------------
+
+//CREATE/NEW ROUTE
+inside index.ejs--> 
+<form method="GET" action="/listings/new"></form>
+
+inside app.js-->
+//New Route
+app.get("/listings/new", (req, res) => {
+    res.render("listings/new.ejs");
+});
+
+and add the code for new.ejs
+=>ALWAYS MAKE SURE NEW.EJS IS ABOVE OF SHOW.EJS
+
+
+//Create route
+app.use(express.urlencoded({ extended: true })); // Middleware to parse form data
+
+app.post("/listings", async (req, res) => {
+    try {
+        const newListing = new Listing(req.body);
+        await newListing.save();
+        res.redirect("/listings");
+    } catch (error) {
+        console.error("Error saving listing:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
+
+//UPDATE ROUTE
+Add this in show.ejs=>
+    <a href="/listings/<%=listing._id %>/edit">Edit this Listing</a>
+
+Add this on app.js=>
+app.put("/listings/:id", async (req, res) => {
+    let {id} = req.params;
+   await Listing.findByIdAndUpdate(id, {...req.body.listing});
+   redirect("/listings");
+});
+
+
+//DELETE ROUTE
+Add this in show.ejs=>
+<form action="/listings/<%=listing._id%>?_method=DELETE" method="POST">
+        <button>Delete this listing</button>
+</form>
+
+Add this in app.js=>
+app.delete("/listings/:id", async(req, res)=>{
+    let {id} = req.params;
+   let deletedListing = await Listing.findByIdAndDelete(id);
+   console.log(deletedListing);
+   res.redirect("/listings");
+});
+
+
+
